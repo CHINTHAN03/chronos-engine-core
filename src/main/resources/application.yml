@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/review_hub
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+chronos:
+  ai:
+    gemini:
+      api-key: ${GEMINI_API_KEY}
+      url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
