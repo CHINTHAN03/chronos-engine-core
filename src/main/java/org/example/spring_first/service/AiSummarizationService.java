@@ -2,12 +2,20 @@ package org.example.spring_first.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class AiSummarizationService {
+
+    // --- ENTERPRISE STANDARD: Proper SLF4J Logging ---
+    private static final Logger log = LoggerFactory.getLogger(AiSummarizationService.class);
 
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
@@ -24,23 +32,42 @@ public class AiSummarizationService {
     }
 
     public String summarizeForExecutiveDeck(String rawLogs, String audience) {
-        String prompt = "You are a Senior Technical Writer at a top-tier SaaS company. Convert the following raw developer logs into a Release Notes document formatted in standard Markdown.\n\n" +
-                "TARGET AUDIENCE: " + audience + ". Adjust your technical depth and tone accordingly.\n\n" +
-                "FORMATTING RULES:\n" +
-                "- Group items logically into sections like '✨ New Features', '🐛 Bug Fixes', or '🔧 Under the Hood'.\n" +
-                "- Do not include any conversational introductions or conclusions. Output ONLY the release notes.\n\n" +
-                "Raw Logs:\n" + rawLogs;
+
+        // --- ENTERPRISE STANDARD: Java Text Blocks for clean, readable prompts ---
+        String prompt = """
+                You are a Principal Release Engineer converting raw developer telemetry into a formal Release Artifact.
+                
+                TARGET AUDIENCE: %s
+                
+                FORMATTING MANDATES:
+                - Use ONLY standard ASCII/alphanumeric characters and basic markdown punctuation (*, -, #).
+                - Graphical symbols, unicode icons, and pictograms are strictly prohibited. Output will fail validation if they are included.
+                - Tone must be dry, analytical, and highly technical.
+                - Categorize the logs under these exact headers if applicable:
+                ### System Enhancements
+                ### Patches & Bug Fixes
+                ### Infrastructure Changes
+                
+                EXAMPLE EXPECTED OUTPUT:
+                ### System Enhancements
+                - Implemented stateless JWT session token generation for the identity gateway.
+                ### Patches & Bug Fixes
+                - Resolved race condition in concurrent database connection pool.
+                
+                RAW TELEMETRY LOGS:
+                %s
+                """.formatted(audience, rawLogs);
 
         try {
-
-            java.util.Map<String, Object> requestMap = java.util.Map.of(
-                    "contents", java.util.List.of(
-                            java.util.Map.of("parts", java.util.List.of(
-                                    java.util.Map.of("text", prompt)
+            // Cleaned up imports so we can just use Map.of and List.of directly
+            Map<String, Object> requestMap = Map.of(
+                    "contents", List.of(
+                            Map.of("parts", List.of(
+                                    Map.of("text", prompt)
                             ))
                     ),
-                    "generationConfig", java.util.Map.of(
-                            "temperature", 0.7 // Forces the AI to generate more dynamic, varied text
+                    "generationConfig", Map.of(
+                            "temperature", 0.0 // Forces absolute mathematical determinism
                     )
             );
 
@@ -58,8 +85,9 @@ public class AiSummarizationService {
             return rootNode.path("candidates").get(0).path("content").path("parts").get(0).path("text").asText();
 
         } catch (Exception e) {
-            System.err.println("AI Generation failed: " + e.getMessage());
-            return " - " + rawLogs;
+            // Logs the exact error securely without halting the JVM thread
+            log.error("Neural Graph synthesis failed for telemetry pipeline.", e);
+            return "### Pipeline Warning\nNeural graph synthesis failed. Raw telemetry fallback:\n\n" + rawLogs;
         }
     }
 }
