@@ -14,7 +14,7 @@ import java.util.Map;
 @Service
 public class AiSummarizationService {
 
-    // --- ENTERPRISE STANDARD: Proper SLF4J Logging ---
+
     private static final Logger log = LoggerFactory.getLogger(AiSummarizationService.class);
 
     private final WebClient webClient;
@@ -33,7 +33,7 @@ public class AiSummarizationService {
 
     public String summarizeForExecutiveDeck(String rawLogs, String audience) {
 
-        // --- ENTERPRISE STANDARD: Java Text Blocks for clean, readable prompts ---
+
         String prompt = """
                 You are a Principal Release Engineer converting raw developer telemetry into a formal Release Artifact.
                 
@@ -59,7 +59,7 @@ public class AiSummarizationService {
                 """.formatted(audience, rawLogs);
 
         try {
-            // Cleaned up imports so we can just use Map.of and List.of directly
+
             Map<String, Object> requestMap = Map.of(
                     "contents", List.of(
                             Map.of("parts", List.of(
@@ -67,7 +67,7 @@ public class AiSummarizationService {
                             ))
                     ),
                     "generationConfig", Map.of(
-                            "temperature", 0.0 // Forces absolute mathematical determinism
+                            "temperature", 0.0
                     )
             );
 
