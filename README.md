@@ -46,25 +46,25 @@ This repository contains the `chronos-engine-core`, functioning as a decoupled R
 
 ##  Local Deployment Protocol
 
-### Prerequisites
+## Prerequisites
 * Java Development Kit (JDK) 17+
 * Maven 3.8+
 * Google Gemini API Key
 
-### Initialization
+## Initialization
 
-# 1. Clone the repository
-git clone https://github.com/your-username/chronos-engine-core.git
+### 1. Clone the repository
+git clone https://github.com/CHINTHAN03/chronos-engine-core.git
 
-# 2. Configure environment variables (Create application-dev.yml or .env)
+### 2. Configure environment variables (Create application-dev.yml or .env)
 JWT_SECRET=your_cryptographic_secret_key
 GEMINI_API_KEY=your_google_gemini_api_key
 
-# 3. Boot the Spring application
+### 3. Boot the Spring application
 ./mvnw spring-boot:run
 
 
-> **Note:** The frontend client for this API is located at the [Chronos Web Client Repository](https://github.com/your-username/chronos-web-client).
+> **Note:** The frontend client for this API is located at the [Chronos Web Client Repository](https://github.com/CHINTHAN03/chronos-web-client).
 
 ---
 
